@@ -1,0 +1,71 @@
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+header {
+    background-color: #000000; /* CU Boulder Black */
+    color: #CFB87C; /* CU Boulder Gold */
+}
+
+#sidebar-nav .nav-link {
+    color: #000000;
+}
+
+#sidebar-nav .nav-link.active {
+    background-color: #CFB87C;
+    color: #000000;
+}
+
+/* Chatbot Styles */
+#chat-container {
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.user-message {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.bot-response {
+    text-align: left;
+    margin-bottom: 10px;
+    background-color: #e2e6ea;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Custom Send Button Styles */
+.btn-send {
+    background-color: #565A5C; /* Desired button color */
+    border-color: #565A5C;     /* Match border with background */
+    color: #FFFFFF;            /* Icon color */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;                /* Fixed width for consistency */
+}
+
+.btn-send:hover {
+    background-color: #45494a; /* Darker shade on hover */
+    border-color: #45494a;     /* Darker border on hover */
+    color: #FFFFFF;            /* Maintain icon color on hover */
+}
+
+.btn-send i {
+    font-size: 1.2rem; /* Adjust icon size as needed */
+}
+
+/* Custom Submit Button Styles */
+.btn-submit {
+    background-color: #45494a; /* Desired button background color */
+    border-color: #45494a;     /* Match border with background */
+    color: #FFFFFF;            /* Text color */
+}
+
+.btn-submit:hover {
+    background-color: #3b4346; /* Slightly darker shade on hover */
+    border-color: #3b4346;     /* Darker border on hover */
+    color: #FFFFFF;            /* Maintain text color on hover */
+}
+
