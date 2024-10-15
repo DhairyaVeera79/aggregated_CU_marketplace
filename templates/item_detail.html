@@ -1,0 +1,32 @@
+<!-- templates/item_detail.html -->
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-4">
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a href="{{ url_for('database') }}" class="btn btn-explore">
+                <i class="bi bi-arrow-left"></i> Back to Marketplace
+            </a>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <img src="{{ url_for('static', filename='images/' + item.image) }}" class="img-fluid rounded" alt="{{ item.name }}">
+            </div>
+            <div class="col-md-6">
+                <h2>{{ item.name }}</h2>
+                <p><strong>Description:</strong> {{ item.description }}</p>
+                <p><strong>Price:</strong> ${{ item.price }}</p>
+                <p><strong>Seller Email:</strong> 
+                    <span id="seller-email">{{ seller_email }}</span>
+                    <button class="btn btn-sm btn-outline-secondary" id="copy-email-btn" title="Copy Email">
+                        <i class="bi bi-clipboard"></i>
+                    </button>
+                </p>
+                <a href="mailto:{{ seller_email }}?subject=Inquiry about {{ item.name }}&body=Hello,%0D%0A%0D%0AI am interested in your {{ item.description }} listed for ${{ item.price }}." class="btn btn-explore">
+                    <i class="bi bi-envelope-fill"></i> Contact Seller
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

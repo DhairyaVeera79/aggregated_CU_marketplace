@@ -1,10 +1,12 @@
+/* static/css/styles.css */
+
 body {
     font-family: 'Roboto', sans-serif;
 }
 
 header {
     background-color: #000000; /* CU Boulder Black */
-    color: #CFB87C; /* CU Boulder Gold */
+    color: #CFB87C; /* Updated CU Boulder Gold */
 }
 
 #sidebar-nav .nav-link {
@@ -12,16 +14,182 @@ header {
 }
 
 #sidebar-nav .nav-link.active {
-    background-color: #CFB87C;
+    background-color: #CFB87C; /* Updated CU Boulder Gold */
     color: #000000;
 }
 
-/* Chatbot Styles */
-#chat-container {
-    background-color: #f8f9fa;
+/* Landing Page Styles */
+.hero-section {
+    background: url('https://www.colorado.edu/ecenter/sites/default/files/styles/main_image/public/2021-02/Hero_Landing_Page_3.jpg?itok=7lO8Rr84') no-repeat center center;
+    background-size: cover;
+    padding: 100px 0;
+    position: relative;
+}
+
+.hero-section::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+}
+
+.hero-section .container {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-section h2 {
+    font-size: 3rem;
+    font-weight: 700;
+}
+
+.hero-section p {
+    font-size: 1.25rem;
+}
+
+/* Features Section Icons */
+.features-section i {
+    color: #CFB87C; /* Updated CU Boulder Gold */
+}
+
+/* Custom "Explore Marketplace" Button */
+.btn-explore {
+    background-color: #CFB87C; /* Updated CU Boulder Gold */
+    border-color: #CFB87C;
+    color: #000000; /* Black text for contrast */
+}
+
+.btn-explore:hover {
+    background-color: #bfa26e; /* Slightly darker gold on hover */
+    border-color: #bfa26e;
+    color: #000000;
+}
+
+/* Chatbot Button Styles */
+.chatbot-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #565A5C;
+    color: #FFFFFF;
+    border: 2px solid #CFB87C; /* Gold border */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.chatbot-button:hover {
+    background-color: #45494a;
+    border-color: #CFB87C;
+}
+
+.chatbot-button i {
+    font-size: 1.5rem;
+}
+
+/* Chatbot Window Styles */
+.chatbot-window {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 300px;
+    height: 400px; /* Set a default height */
+    background-color: #FFFFFF;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease, height 0.3s ease;
+}
+
+.chatbot-window.maximized {
+    width: 90%;
+    height: 90%;
+    bottom: 5%;
+    right: 5%;
+}
+
+.chatbot-header {
+    background-color: #565A5C;
+    color: #FFFFFF;
+    padding: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chatbot-controls button {
+    background: none;
+    border: none;
+    color: #FFFFFF;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+.chatbot-controls button:hover {
+    color: #CFB87C; /* Gold on hover */
+}
+
+.chatbot-body {
+    padding: 10px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#chatbot-chat {
+    flex-grow: 1;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
     border-radius: 5px;
 }
 
+.chatbot-body .input-group {
+    margin-top: 10px;
+}
+
+.chatbot-body .input-group input {
+    flex: 1;
+}
+
+.chatbot-body .input-group .btn-send {
+    background-color: #565A5C; /* Dark grey */
+    border-color: #565A5C;     /* Match border with background */
+    color: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.chatbot-body .input-group .btn-send:hover {
+    background-color: #45494a; /* Slightly darker */
+    border-color: #45494a;
+    color: #FFFFFF;
+}
+
+.chatbot-body .input-group .btn-send i {
+    font-size: 1.2rem;
+}
+
+/* Chatbot Messages */
 .user-message {
     text-align: right;
     margin-bottom: 10px;
@@ -35,37 +203,21 @@ header {
     border-radius: 5px;
 }
 
-/* Custom Send Button Styles */
-.btn-send {
-    background-color: #565A5C; /* Desired button color */
-    border-color: #565A5C;     /* Match border with background */
-    color: #FFFFFF;            /* Icon color */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;                /* Fixed width for consistency */
-}
-
-.btn-send:hover {
-    background-color: #45494a; /* Darker shade on hover */
-    border-color: #45494a;     /* Darker border on hover */
-    color: #FFFFFF;            /* Maintain icon color on hover */
-}
-
-.btn-send i {
-    font-size: 1.2rem; /* Adjust icon size as needed */
-}
-
-/* Custom Submit Button Styles */
+/* Custom Submit Button in Sell Tab */
 .btn-submit {
-    background-color: #45494a; /* Desired button background color */
-    border-color: #45494a;     /* Match border with background */
-    color: #FFFFFF;            /* Text color */
+    background-color: #45494a; /* CU Boulder Dark Grey */
+    border-color: #45494a;
+    color: #FFFFFF;            /* White text */
 }
 
 .btn-submit:hover {
     background-color: #3b4346; /* Slightly darker shade on hover */
-    border-color: #3b4346;     /* Darker border on hover */
-    color: #FFFFFF;            /* Maintain text color on hover */
+    border-color: #3b4346;
+    color: #FFFFFF;
 }
 
+/* Fixed Image Heights for Database Cards */
+.card-img-top {
+    height: 200px; /* Adjust as needed */
+    object-fit: cover;
+}
