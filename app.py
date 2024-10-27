@@ -1,135 +1,75 @@
-# app.py
-from flask import Flask, render_template, request, jsonify, abort
+from flask import Flask, render_template, redirect, url_for, request
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-# Sample static items with unique IDs
-items = [
-    {
-        'id': 0,
-        'name': 'Laptop',
-        'description': 'Dell XPS 13, 8GB RAM, 256GB SSD',
-        'price': 800,
-        'image': 'sample.jpg'
-    },
-    {
-        'id': 1,
-        'name': 'Bicycle',
-        'description': 'Mountain bike, lightly used',
-        'price': 150,
-        'image': 'sample.jpg'
-    },
-    {
-        'id': 2,
-        'name': 'Textbooks Bundle',
-        'description': 'Collection of required textbooks for Fall semester',
-        'price': 100,
-        'image': 'sample.jpg'
-    },
-    {
-        'id': 3,
-        'name': 'Desk Chair',
-        'description': 'Ergonomic office chair with lumbar support',
-        'price': 120,
-        'image': 'sample.jpg'
-    },
-    {
-        'id': 4,
-        'name': 'Smartphone',
-        'description': 'iPhone 12, 64GB, good condition',
-        'price': 600,
-        'image': 'sample.jpg'
-    },
-    {
-        'id': 5,
-        'name': 'Guitar',
-        'description': 'Acoustic guitar with a hard case',
-        'price': 200,
-        'image': 'sample.jpg'
-    },
-    {
-        'id': 6,
-        'name': 'Bookshelf',
-        'description': 'Wooden bookshelf with 5 shelves',
-        'price': 90,
-        'image': 'sample.jpg'
-    },
-    {
-        'id': 7,
-        'name': 'Headphones',
-        'description': 'Noise-cancelling over-ear headphones',
-        'price': 150,
-        'image': 'sample.jpg'
-    },
-]
+# Configure PostgreSQL database connection
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dhairyaveera@localhost/cu_marketplace'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# Initialize the SQLAlchemy object
+db = SQLAlchemy(app)
+
+# Define the User model
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    identikey = db.Column(db.String(50), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.name}>'
+
+# Define the Item model
+class Item(db.Model):
+    __tablename__ = 'items'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    item_name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text)
+    brand = db.Column(db.String(100))
+    condition = db.Column(db.String(50))
+    price = db.Column(db.Numeric(10, 2))
+    image_url = db.Column(db.String(255))
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+
+    def __repr__(self):
+        return f'<Item {self.item_name}>'
+
+# Home route
 @app.route('/')
 def home():
     return render_template('home.html')
 
+# Database route
 @app.route('/database')
 def database():
+    items = Item.query.all()  # Fetch all items from the database
     return render_template('database.html', items=items)
 
+# Sell route
 @app.route('/sell', methods=['GET', 'POST'])
 def sell():
     if request.method == 'POST':
-        # Handle form submission
-        item_name = request.form.get('item_name')
-        brand = request.form.get('brand')
-        age = request.form.get('age')
-        price = request.form.get('price')
-        image = request.files.get('image')
-        
-        # Here, you would process and save the data to the database and handle the image upload
-        # For demonstration, we'll print the received data
-        print(f"Item Name: {item_name}")
-        print(f"Brand: {brand}")
-        print(f"Age: {age} months")
-        print(f"Price: ${price}")
-        if image:
-            image.save(f"static/images/{image.filename}")
-            print(f"Image saved as {image.filename}")
-            # Optionally, append the new item to the items list with a new id
-            new_id = len(items)
-            new_item = {
-                'id': new_id,
-                'name': item_name,
-                'description': f"{brand}, {age} months old",
-                'price': price,
-                'image': image.filename
-            }
-            items.append(new_item)
-        
-        # Redirect or render a success message
-        return render_template('sell.html', success=True)
-    
+        item_name = request.form['item_name']
+        description = request.form['description']
+        brand = request.form['brand']
+        condition = request.form['condition']
+        price = request.form['price']
+        new_item = Item(user_id=1, item_name=item_name, description=description, brand=brand, condition=condition, price=price)
+        db.session.add(new_item)
+        db.session.commit()
+        return redirect(url_for('database'))
     return render_template('sell.html')
 
-# Route for item detail page
+# Item Details route
 @app.route('/item/<int:item_id>')
-def item_detail(item_id):
-    # Find the item with the given id
-    item = next((item for item in items if item['id'] == item_id), None)
-    if item is None:
-        abort(404)
-    # Placeholder seller email
-    seller_email = 'jesus.portilla@colorado.edu'
-    return render_template('item_detail.html', item=item, seller_email=seller_email)
-
-# Placeholder route for chatbot responses (for future integration)
-@app.route('/chatbot/respond', methods=['POST'])
-def chatbot_respond():
-    user_message = request.json.get('message')
-    # Here, you would integrate with OpenAI API to generate responses
-    # For now, we'll return a placeholder response
-    response = "This is a placeholder response."
-    return jsonify({'response': response})
-
-# 404 Error Handler
-@app.errorhandler(404)
-def page_not_found(e):
-    return render_template('404.html'), 404
+def item_details(item_id):
+    item = Item.query.get_or_404(item_id)
+    return render_template('item_detail.html', item=item)
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()  # Create database tables if they don't exist
     app.run(debug=True)

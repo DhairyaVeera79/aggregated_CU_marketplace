@@ -1,34 +1,30 @@
-<!-- templates/sell.html -->
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
+<div class="container mt-5">
     <h2>Sell an Item</h2>
-    {% if success %}
-        <div class="alert alert-success" role="alert">
-            Your item has been successfully listed!
+    <form method="POST" action="{{ url_for('sell') }}">
+        <div class="form-group">
+            <label for="item_name">Item Name</label>
+            <input type="text" class="form-control" id="item_name" name="item_name" required>
         </div>
-    {% endif %}
-    <form method="POST" action="{{ url_for('sell') }}" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label for="item-name" class="form-label">Item Name</label>
-            <input type="text" class="form-control" id="item-name" name="item_name" placeholder="Enter item name" required>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
         </div>
-        <div class="mb-3">
-            <label for="brand" class="form-label">Brand</label>
-            <input type="text" class="form-control" id="brand" name="brand" placeholder="Enter brand" required>
+        <div class="form-group">
+            <label for="brand">Brand</label>
+            <input type="text" class="form-control" id="brand" name="brand">
         </div>
-        <div class="mb-3">
-            <label for="age" class="form-label">Age (in months)</label>
-            <input type="number" class="form-control" id="age" name="age" placeholder="Enter age" required>
+        <div class="form-group">
+            <label for="condition">Condition</label>
+            <input type="text" class="form-control" id="condition" name="condition">
         </div>
-        <div class="mb-3">
-            <label for="price" class="form-label">Price ($)</label>
-            <input type="number" class="form-control" id="price" name="price" placeholder="Enter price" required>
+        <div class="form-group">
+            <label for="price">Price</label>
+            <input type="number" class="form-control" id="price" name="price" required>
         </div>
-        <div class="mb-3">
-            <label for="image" class="form-label">Upload Image</label>
-            <input class="form-control" type="file" id="image" name="image" accept="image/*" required>
-        </div>
-        <button type="submit" class="btn btn-submit">Submit</button>
+        <button type="submit" class="btn btn-cu-dark-grey">Submit</button>
     </form>
+</div>
 {% endblock %}
