@@ -1,4 +1,3 @@
-<!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,10 +11,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <!-- Google Fonts (Optional) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Header -->
@@ -53,10 +48,10 @@
         </div>
     </div>
 
-    <!-- Chatbot Button -->
+    <!-- Chatbot Button
     <button id="chatbot-button" class="chatbot-button">
         <i class="bi bi-chat-dots-fill"></i>
-    </button>
+    </button> -->
 
     <!-- Chatbot Window -->
     <div id="chatbot-window" class="chatbot-window d-none">
@@ -68,13 +63,7 @@
             </div>
         </div>
         <div class="chatbot-body">
-            <div id="chatbot-chat" class="mb-3">
-                <!-- Chat messages will appear here -->
-            </div>
-            <div class="input-group">
-                <input type="text" id="chatbot-input" class="form-control" placeholder="Type your message...">
-                <button class="btn btn-send" id="chatbot-send-btn"><i class="bi bi-send"></i></button>
-            </div>
+            <!-- Watson Assistant Chat will render here -->
         </div>
     </div>
 
@@ -82,5 +71,22 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+
+    <!-- IBM Watson Assistant Integration -->
+    <script>
+      window.watsonAssistantChatOptions = {
+        integrationID: "beccf052-b1bc-4d33-86d7-69c13b2625da", // The ID of this integration.
+        region: "us-south", // The region your integration is hosted in.
+        serviceInstanceID: "19cdd026-6ff5-4efa-95fa-25febfc254e6", // The ID of your service instance.
+        onLoad: async (instance) => {
+            instance.render();
+        }
+      };
+      setTimeout(function(){
+        const t=document.createElement('script');
+        t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+        document.head.appendChild(t);
+      });
+    </script>
 </body>
 </html>

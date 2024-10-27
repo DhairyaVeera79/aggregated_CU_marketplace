@@ -1,23 +1,13 @@
 /* static/js/scripts.js */
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Chatbot Button and Window Functionality
-    const chatbotButton = document.getElementById('chatbot-button');
+    // Chatbot Window Functionality
     const chatbotWindow = document.getElementById('chatbot-window');
     const closeBtn = document.getElementById('close-btn');
     const maximizeBtn = document.getElementById('maximize-btn');
     const chatbotSendBtn = document.getElementById('chatbot-send-btn');
     const chatbotInput = document.getElementById('chatbot-input');
     const chatbotChat = document.getElementById('chatbot-chat');
-
-    // Toggle Chatbot Window Visibility
-    chatbotButton.addEventListener('click', function () {
-        chatbotWindow.classList.toggle('d-none');
-        // Remove maximized class when opening the window
-        if (!chatbotWindow.classList.contains('d-none')) {
-            chatbotWindow.classList.remove('maximized');
-        }
-    });
 
     // Close Chatbot Window
     closeBtn.addEventListener('click', function () {
@@ -27,12 +17,6 @@ document.addEventListener('DOMContentLoaded', function () {
     // Maximize/Restore Chatbot Window
     maximizeBtn.addEventListener('click', function () {
         chatbotWindow.classList.toggle('maximized');
-        // Adjust the chat area when maximizing/restoring
-        if (chatbotWindow.classList.contains('maximized')) {
-            // Optional: Perform any additional actions when maximized
-        } else {
-            // Optional: Perform any additional actions when restored
-        }
         // Scroll to bottom after maximizing/restoring
         setTimeout(() => {
             chatbotChat.scrollTop = chatbotChat.scrollHeight;
@@ -52,10 +36,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Clear input
             chatbotInput.value = '';
 
-            // Placeholder for bot response
+            // Placeholder for bot response - Replace this with IBM Watson response
             const botMsg = document.createElement('div');
             botMsg.classList.add('bot-response');
-            botMsg.innerHTML = `<strong>Bot:</strong> This is a placeholder response.`;
+            botMsg.innerHTML = `<strong>Bot:</strong> This is a placeholder response.`; // Replace this line with the actual bot response logic
             chatbotChat.appendChild(botMsg);
 
             // Scroll to bottom
@@ -89,7 +73,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Fallback to older method using a temporary textarea
                 const tempTextarea = document.createElement('textarea');
                 tempTextarea.value = email;
-                // Avoid scrolling to bottom
                 tempTextarea.style.position = 'absolute';
                 tempTextarea.style.left = '-9999px';
                 document.body.appendChild(tempTextarea);
