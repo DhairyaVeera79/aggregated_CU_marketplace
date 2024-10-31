@@ -52,16 +52,39 @@ document.addEventListener('DOMContentLoaded', function () {
             // Clear input
             chatbotInput.value = '';
 
-            // Placeholder for bot response
-            const botMsg = document.createElement('div');
-            botMsg.classList.add('bot-response');
-            botMsg.innerHTML = `<strong>Bot:</strong> This is a placeholder response.`;
-            chatbotChat.appendChild(botMsg);
-
-            // Scroll to bottom
-            chatbotChat.scrollTop = chatbotChat.scrollHeight;
+            // Send message to Flask server and display response
+            fetch('/chatbot', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Display bot response
+                const botMsg = document.createElement('div');
+                botMsg.classList.add('bot-response');
+                botMsg.innerHTML = `<strong>Bot:</strong> ${data.reply || "I'm sorry, I couldn't understand that."}`;
+                chatbotChat.appendChild(botMsg);
+                chatbotChat.scrollTop = chatbotChat.scrollHeight;  // Scroll to bottom
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const botMsg = document.createElement('div');
+                botMsg.classList.add('bot-response');
+                botMsg.innerHTML = `<strong>Bot:</strong> There was an error processing your message.`;
+                chatbotChat.appendChild(botMsg);
+            });
         }
     });
+
+
 
     // Allow pressing 'Enter' to send message in Chatbot Window
     chatbotInput.addEventListener('keypress', function (e) {

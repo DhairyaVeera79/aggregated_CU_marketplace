@@ -1,8 +1,8 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os  # Import os to use os.urandom for generating a random secret key
 from werkzeug.utils import secure_filename  # Add this import for file handling
-
+from openai import OpenAI
 
 
 app = Flask(__name__)
@@ -19,6 +19,9 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit to 16 MB
 
 # Initialize the SQLAlchemy object
 db = SQLAlchemy(app)
+
+# Initialize OpenAI API Key
+client = OpenAI() 
 
 # Define the User model
 class User(db.Model):
@@ -51,6 +54,26 @@ class Item(db.Model):
 @app.route('/')
 def home():
     return render_template('home.html')
+
+# Chatbot Endpoint
+@app.route('/chatbot', methods=['POST'])
+def chatbot():
+    user_message = request.json.get("message")
+    if not user_message:
+        return jsonify({"error": "No message provided"}), 400
+
+    try:
+        # Query OpenAI API for response
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[{"role": "user", "content": user_message}]
+        )
+        bot_reply = response.choices[0].message.content
+    except Exception as e:
+        print(f"OpenAI API error: {e}")
+        bot_reply = "I'm sorry, there was an error processing your request."
+
+    return jsonify({"reply": bot_reply})
 
 # Database route
 @app.route('/database')
