@@ -1,0 +1,100 @@
+Title: Aggregated CU Student Marketplace
+Participant: Dhairya Veera (sole participant)
+Project Goals
+The Aggregated CU Student Marketplace project aims to create a centralized, web-based
+platform exclusively for University of Colorado Boulder students, authenticated via their CU
+identikey. This marketplace will enable students to buy, sell, and exchange goods and services
+within the CU Boulder community, including textbooks, electronics, furniture, and more. By
+aggregating similar listings into a single platform, it will simplify the browsing and listing
+experience for students. Key features like advanced search filters, real-time updates, and userfriendly
+design will provide a safe and efficient environment for campus-based transactions. This
+project leverages my background in data science and web development to address a real need
+within the student community, while adhering to the scope of this course.
+Software and Hardware Components
+Software Components:
+1. Backend Framework: Python with Flask, handling server operations, API endpoints, and
+database integration.
+2. Database Management: PostgreSQL, used for relational data storage of listings, user
+profiles, and transaction records.
+3. Frontend Frameworks: HTML, CSS, and JavaScript for a responsive, interactive user
+interface.
+4. Authentication and Authorization: Integration with CU Boulder’s identikey system to
+ensure secure, student-only access.
+5. Image Storage Service: Google Cloud Storage (GCS) for storing and retrieving images
+associated with listings.
+6. Message Queue: Redis, managing asynchronous tasks such as image uploads and user
+notifications to enhance application responsiveness.
+7. API Development: REST and gRPC APIs, providing optimized communication channels
+between the frontend and backend for better scalability.
+8. Containerization: Docker for packaging the application, ensuring consistency and ease of
+deployment across environments.
+9. Orchestration and Scaling: Kubernetes, deployed on Google Kubernetes Engine (GKE),
+will manage containerized application components, allowing scalable, reliable cloud
+deployment.
+10. Cloud Hosting: Google Cloud VM instances for hosting the application and supporting
+secure, scalable access for users.
+Hardware Components:
+1. Personal Computer for development, local testing, and deployment.
+2. Google Cloud VM Instances and GKE Cluster for cloud-hosted deployment, providing high
+availability, scalability, and efficient resource management.
+Architectural Diagram
+The architectural diagram (see attached) illustrates:
+• Frontend Interaction: The user interface communicates with the backend server through
+RESTful and gRPC APIs to support item retrieval, listings, and user interactions.
+• Backend Services: Flask server handles business logic and interacts with the PostgreSQL
+database, Redis queue, and GCS for image storage.
+• Docker and Kubernetes Integration: The application is containerized using Docker for
+consistency across environments and deployed on a GKE cluster, which orchestrates
+container scaling and load balancing.
+• Cloud Storage and Queue: GCS stores images, with Redis queuing tasks for processing
+notifications and image handling, ensuring high performance.
+Component Interaction Description
+1. User Interface and API Interaction: Students log in using their CU identikey, which
+initiates the authentication process. The frontend interacts with the backend through
+RESTful APIs to manage listings, retrieve user information, and handle item searches.
+2. Backend Server, Database, and Cloud Storage: Authenticated users can perform CRUD
+operations on listings, user profiles, and transactions within the PostgreSQL database.
+Images associated with listings are uploaded to Google Cloud Storage, with links stored in
+the database for easy access.
+3. Asynchronous Processing (Redis Queue): Redis manages image processing and
+notification tasks, improving overall performance by reducing the load on the main
+application.
+4. Containerization and Orchestration: Docker packages each component to ensure
+environmental consistency, while Kubernetes on GKE manages containerized
+deployment, scaling resources as needed based on user demand.
+5. Image Storage Service (GCS): Images associated with listings are stored and retrieved
+through GCS, offloading storage requirements from the main server and ensuring scalable
+storage access.
+Debugging and Testing Mechanisms
+1. Debugging: During development, Flask’s debugging tools will monitor and log errors. In
+production, Google Cloud’s logging and monitoring tools will provide insight into system
+performance and error rates.
+2. Unit Testing: Each module will undergo unit testing with Pytest to ensure functionality
+across authentication, database operations, and API endpoints.
+3. Load Testing: Redis and GCS integrations will be load-tested to ensure they handle higher
+traffic effectively, particularly under Kubernetes-managed scaling conditions.
+Meeting Project Requirements: Use of Multiple Cloud Technologies
+This project plans to utilize six distinct cloud technologies:
+1. Databases (PostgreSQL): Used to manage structured data for items, users, and
+transactions, PostgreSQL provides secure, relational data management.
+2. Message Queue (Redis): Handles task queuing for image uploads and notifications,
+improving the responsiveness of the application.
+3. Storage Services (Google Cloud Storage): Stores listing images, allowing easy and scalable
+retrieval while reducing local storage needs.
+4. VMs/Containers (Google Cloud VM and Docker): The application is hosted on Google
+Cloud VM instances, while Docker ensures consistency across environments. Kubernetes
+on GKE will orchestrate containerized services, managing load and scaling as needed.
+5. Orchestration with Kubernetes (Google Kubernetes Engine): Kubernetes will handle the
+deployment and scaling of Docker containers on GKE, enabling high availability and
+resilience against traffic spikes.
+6. API Development (gRPC and REST): REST and gRPC APIs facilitate efficient
+communication between the frontend and backend, providing a flexible way to handle
+user requests with lower latency.
+Scope and Ambition
+This project is ambitious yet feasible within the scope of the course. By leveraging my skills in
+data science and web development, I am confident that the project will address a real need within
+the CU Boulder community. The use of Docker and Kubernetes for containerization and
+orchestration, Redis for task management, and GCS for storage aligns with industry-standard
+practices, while the integration with CU identikey ensures a secure, student-exclusive
+marketplace. This approach will also provide valuable experience with cloud technologies,
+aligning with course objectives while addressing a meaningful, real-world problem.
