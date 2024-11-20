@@ -69,6 +69,13 @@ def chatbot():
             messages=[{"role": "user", "content": user_message}]
         )
         bot_reply = response.choices[0].message.content
+
+        # Example: Fetch items from the database based on user message
+        if "items" in user_message.lower():
+            items = Item.query.all()
+            items_list = [item.item_name for item in items]
+            bot_reply += "\n\nHere are some items in the marketplace:\n" + "\n".join(items_list)
+
     except Exception as e:
         print(f"OpenAI API error: {e}")
         bot_reply = "I'm sorry, there was an error processing your request."
@@ -144,7 +151,6 @@ def sell():
         return redirect(url_for('database'))  # Redirect to the database view
 
     return render_template('sell.html')
-
 
 # Item Details route
 @app.route('/item/<int:item_id>')

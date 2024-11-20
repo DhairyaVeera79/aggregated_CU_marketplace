@@ -1,5 +1,3 @@
-/* static/js/scripts.js */
-
 document.addEventListener('DOMContentLoaded', function () {
     // Chatbot Button and Window Functionality
     const chatbotButton = document.getElementById('chatbot-button');
@@ -84,8 +82,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-
     // Allow pressing 'Enter' to send message in Chatbot Window
     chatbotInput.addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
@@ -118,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.body.appendChild(tempTextarea);
                 tempTextarea.focus();
                 tempTextarea.select();
-
                 try {
                     const successful = document.execCommand('copy');
                     if (successful) {
