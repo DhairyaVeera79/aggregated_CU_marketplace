@@ -3,12 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 import os  # Import os to use os.urandom for generating a random secret key
 from werkzeug.utils import secure_filename  # Add this import for file handling
 from openai import OpenAI
+import base64
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
 
 # Configure PostgreSQL database connection
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dhairyaveera@localhost/cu_marketplace'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dhairyaveera:password@34.83.67.63:5432/cu_marketplace'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Set the secret key for session management
@@ -20,31 +22,22 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit to 16 MB
 # Initialize the SQLAlchemy object
 db = SQLAlchemy(app)
 
+# Initialize Flask-Migrate
+migrate = Migrate(app)
+
 # Initialize OpenAI API Key
 client = OpenAI() 
-
-# Define the User model
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    email = db.Column(db.String(100), unique=True, nullable=False)
-    identikey = db.Column(db.String(50), unique=True, nullable=False)
-
-    def __repr__(self):
-        return f'<User {self.name}>'
 
 # Define the Item model
 class Item(db.Model):
     __tablename__ = 'items'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     item_name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.Text)
     brand = db.Column(db.String(100))
     condition = db.Column(db.String(50))
     price = db.Column(db.Numeric(10, 2))
-    image_url = db.Column(db.String(255))
+    image_data = db.Column(db.Text)  # Store image as Base64 encoded string
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
 
     def __repr__(self):
@@ -108,47 +101,28 @@ def sell():
         condition = request.form['condition']
         price = request.form['price']
 
-        # Image filename
-        filename = secure_filename(file.filename)
-        print(f"Image file received: {filename}")
-
-        # Save the image file
-        image_path = os.path.join('static/images', filename)
-
-        try:
-            file.save(image_path)  # Save the image
-            print(f"Image saved to: {image_path}")  # Confirm save location
-        except Exception as e:
-            print(f"Error saving image: {e}")  # Catch save errors
-            flash('An error occurred while saving the image.')
-            return redirect(url_for('sell'))
-
-        # Generate the URL for the image
-        image_url = url_for('static', filename='images/' + filename)
-        print(f"Image URL generated: {image_url}")
+        # Encode image to Base64
+        image_data = base64.b64encode(file.read()).decode('utf-8')
 
         # Create new item and add to the database
         new_item = Item(
-            user_id=1,  # Replace with the actual user ID or logic for user assignment
             item_name=item_name,
             description=description,
             brand=brand,
             condition=condition,
             price=price,
-            image_url=image_url
+            image_data=image_data
         )
 
         try:
             db.session.add(new_item)
             db.session.commit()
-            print("Item added to database successfully.")
-            flash('Item added successfully!')  # Flash a success message
+            flash('Item added successfully!')
         except Exception as e:
             db.session.rollback()
-            print(f"Error occurred while adding to the database: {e}")
             flash('An error occurred while adding the item.')
 
-        return redirect(url_for('database'))  # Redirect to the database view
+        return redirect(url_for('database'))
 
     return render_template('sell.html')
 

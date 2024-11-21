@@ -11,6 +11,7 @@
             <p class="card-text"><strong>Condition:</strong> {{ item.condition }}</p>
             <p class="card-text"><strong>Price:</strong> {{ item.price }}</p>
             <p class="card-text"><strong>Seller Email:</strong> {{ 'jesus.portilla@colorado.edu' }}</p>
+            <img src="data:image/jpeg;base64,{{ item.image_data }}" class="img-fluid" alt="Item Image">
             <button class="btn btn-cu-gold" onclick="copyEmail()">Copy Email</button>
             <a href="mailto:jesus.portilla@colorado.edu?subject=Interested in your {{ item.item_name }}&body=Hello, I am interested in buying your {{ item.item_name }}. Could you provide more details?" class="btn btn-cu-gold">Contact Seller</a>
         </div>
