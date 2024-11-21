@@ -1,10 +1,7 @@
-from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
-from flask_sqlalchemy import SQLAlchemy
-import os  # Import os to use os.urandom for generating a random secret key
-from werkzeug.utils import secure_filename  # Add this import for file handling
-from openai import OpenAI
-import base64
-from flask_migrate import Migrate
+from flask import Flask, render_template, redirect, url_for, request, jsonify
+import os
+from redis import Redis
+import json
 
 app = Flask(__name__)
 
@@ -67,4 +64,4 @@ def get_items():
             return jsonify(items)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5001)
+    app.run(debug=True, port=5002)

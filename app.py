@@ -1,10 +1,9 @@
-from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-import os  # Import os to use os.urandom for generating a random secret key
-from werkzeug.utils import secure_filename  # Add this import for file handling
-from openai import OpenAI
+import os
+import base64
+from redis import Redis
 import json
-from flask_migrate import Migrate
 
 app = Flask(__name__)
 
