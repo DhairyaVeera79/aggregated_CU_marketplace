@@ -2,6 +2,7 @@ from flask import Flask, render_template, redirect, url_for, request, jsonify
 import os
 from redis import Redis
 import json
+import base64
 
 app = Flask(__name__)
 

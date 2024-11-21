@@ -63,12 +63,13 @@ def add_item_to_db(item_data):
 
 # Function to send items to the frontend
 def send_items_to_frontend():
-    items = Item.query.all()
-    items_list = [{"id": item.id, "item_name": item.item_name, "description": item.description, "brand": item.brand, "condition": item.condition, "price": str(item.price), "image_data": item.image_data} for item in items]
-    redis.publish('backend_to_frontend', json.dumps(items_list))
+    with app.app_context():
+        items = Item.query.all()
+        items_list = [{"id": item.id, "item_name": item.item_name, "description": item.description, "brand": item.brand, "condition": item.condition, "price": str(item.price), "image_data": item.image_data} for item in items]
+        redis.publish('backend_to_frontend', json.dumps(items_list))
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Create database tables if they don't exist
-    process_redis_messages()
+        process_redis_messages()
     app.run(debug=True, port=5000)
