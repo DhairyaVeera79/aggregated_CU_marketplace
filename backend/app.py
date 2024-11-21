@@ -9,7 +9,7 @@ import logging
 app = Flask(__name__)
 
 # Configure PostgreSQL database connection
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dhairyaveera:password@34.83.67.63:5432/cu_marketplace'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dhairyaveera:password@postgres:5432/cu_marketplace'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Set the secret key for session management
@@ -19,7 +19,7 @@ app.secret_key = os.urandom(24)
 db = SQLAlchemy(app)
 
 # Initialize Redis
-redis = Redis(host='127.0.0.1', port=6379)
+redis = Redis(host='redis', port=6379, db=0)  # Use the service name 'redis'
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
