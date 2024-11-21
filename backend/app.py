@@ -19,7 +19,7 @@ app.secret_key = os.urandom(24)
 db = SQLAlchemy(app)
 
 # Initialize Redis
-redis = Redis(host='localhost', port=6379, db=0)
+redis = Redis(host='0.0.0.0', port=6379, db=0)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -79,4 +79,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Create database tables if they don't exist
         process_redis_messages()
-    app.run(debug=True, port=5000)
+    pp.run(debug=True, host='0.0.0.0', port=5003)
