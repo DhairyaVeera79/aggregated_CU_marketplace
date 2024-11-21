@@ -4,6 +4,7 @@ import os
 import base64
 from redis import Redis
 import json
+import logging
 
 app = Flask(__name__)
 
@@ -19,6 +20,9 @@ db = SQLAlchemy(app)
 
 # Initialize Redis
 redis = Redis(host='localhost', port=6379, db=0)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 
 # Define the Item model
 class Item(db.Model):
@@ -43,6 +47,7 @@ def process_redis_messages():
     for message in pubsub.listen():
         if message['type'] == 'message':
             data = json.loads(message['data'])
+            logging.info(f"Received message: {data}")
             if data['action'] == 'add_item':
                 add_item_to_db(data['item'])
             elif data['action'] == 'get_items':
@@ -50,6 +55,7 @@ def process_redis_messages():
 
 # Function to add item to the database
 def add_item_to_db(item_data):
+    logging.info(f"Adding item to database: {item_data}")
     new_item = Item(
         item_name=item_data['item_name'],
         description=item_data['description'],
@@ -60,6 +66,7 @@ def add_item_to_db(item_data):
     )
     db.session.add(new_item)
     db.session.commit()
+    logging.info("Item added to database")
 
 # Function to send items to the frontend
 def send_items_to_frontend():
