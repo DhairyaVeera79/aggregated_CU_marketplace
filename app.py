@@ -3,9 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 import os  # Import os to use os.urandom for generating a random secret key
 from werkzeug.utils import secure_filename  # Add this import for file handling
 from openai import OpenAI
-import base64
+import json
 from flask_migrate import Migrate
-
 
 app = Flask(__name__)
 
@@ -14,19 +13,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://dhairyaveera:password@34.8
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Set the secret key for session management
-app.secret_key = os.urandom(24)  # Generates a random secret key
-
-# Set the maximum content length for uploads (16 MB)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # Limit to 16 MB
+app.secret_key = os.urandom(24)
 
 # Initialize the SQLAlchemy object
 db = SQLAlchemy(app)
 
-# Initialize Flask-Migrate
-migrate = Migrate(app)
-
-# Initialize OpenAI API Key
-client = OpenAI() 
+# Initialize Redis
+redis = Redis(host='localhost', port=6379, db=0)
 
 # Define the Item model
 class Item(db.Model):
@@ -43,96 +36,40 @@ class Item(db.Model):
     def __repr__(self):
         return f'<Item {self.item_name}>'
 
-# Home route
-@app.route('/')
-def home():
-    return render_template('home.html')
+# Function to process messages from Redis
+def process_redis_messages():
+    pubsub = redis.pubsub()
+    pubsub.subscribe('frontend_to_backend')
 
-# Chatbot Endpoint
-@app.route('/chatbot', methods=['POST'])
-def chatbot():
-    user_message = request.json.get("message")
-    if not user_message:
-        return jsonify({"error": "No message provided"}), 400
+    for message in pubsub.listen():
+        if message['type'] == 'message':
+            data = json.loads(message['data'])
+            if data['action'] == 'add_item':
+                add_item_to_db(data['item'])
+            elif data['action'] == 'get_items':
+                send_items_to_frontend()
 
-    try:
-        # Query OpenAI API for response
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "user", "content": user_message}]
-        )
-        bot_reply = response.choices[0].message.content
+# Function to add item to the database
+def add_item_to_db(item_data):
+    new_item = Item(
+        item_name=item_data['item_name'],
+        description=item_data['description'],
+        brand=item_data['brand'],
+        condition=item_data['condition'],
+        price=item_data['price'],
+        image_data=item_data['image_data']
+    )
+    db.session.add(new_item)
+    db.session.commit()
 
-        # Example: Fetch items from the database based on user message
-        if "items" in user_message.lower():
-            items = Item.query.all()
-            items_list = [item.item_name for item in items]
-            bot_reply += "\n\nHere are some items in the marketplace:\n" + "\n".join(items_list)
-
-    except Exception as e:
-        print(f"OpenAI API error: {e}")
-        bot_reply = "I'm sorry, there was an error processing your request."
-
-    return jsonify({"reply": bot_reply})
-
-# Database route
-@app.route('/database')
-def database():
-    items = Item.query.all()  # Fetch all items from the database
-    return render_template('database.html', items=items)
-
-# Sell route
-@app.route('/sell', methods=['GET', 'POST'])
-def sell():
-    if request.method == 'POST':
-        # Handle image upload
-        if 'image' not in request.files:
-            flash('No file part')
-            return redirect(url_for('sell'))
-        file = request.files['image']
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(url_for('sell'))
-
-        # Get form data
-        item_name = request.form['item_name']
-        description = request.form['description']
-        brand = request.form['brand']
-        condition = request.form['condition']
-        price = request.form['price']
-
-        # Encode image to Base64
-        image_data = base64.b64encode(file.read()).decode('utf-8')
-
-        # Create new item and add to the database
-        new_item = Item(
-            item_name=item_name,
-            description=description,
-            brand=brand,
-            condition=condition,
-            price=price,
-            image_data=image_data
-        )
-
-        try:
-            db.session.add(new_item)
-            db.session.commit()
-            flash('Item added successfully!')
-        except Exception as e:
-            db.session.rollback()
-            flash('An error occurred while adding the item.')
-
-        return redirect(url_for('database'))
-
-    return render_template('sell.html')
-
-# Item Details route
-@app.route('/item/<int:item_id>')
-def item_details(item_id):
-    item = Item.query.get_or_404(item_id)
-    return render_template('item_detail.html', item=item)
+# Function to send items to the frontend
+def send_items_to_frontend():
+    items = Item.query.all()
+    items_list = [{"id": item.id, "item_name": item.item_name, "description": item.description, "brand": item.brand, "condition": item.condition, "price": str(item.price), "image_data": item.image_data} for item in items]
+    redis.publish('backend_to_frontend', json.dumps(items_list))
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Create database tables if they don't exist
-    app.run(debug=True)
+    process_redis_messages()
+    app.run(debug=True, port=5000)
