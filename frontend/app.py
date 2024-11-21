@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 # Initialize Redis
-redis = Redis(host='localhost', port=6379, db=0)
+redis = Redis(host='127.0.0.1', port=6379, db=0)
 
 # Home route
 @app.route('/')
